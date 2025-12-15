@@ -71,6 +71,7 @@ public class StatusGauge {
 
             case "work":
                 hunger = decrease(hunger, 15);
+                health = decrease(health, 15);
                 mood   = decrease(mood, 10);
                 energy = decrease(energy, 15);
                 break;

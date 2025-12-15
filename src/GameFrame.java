@@ -84,42 +84,13 @@ public class GameFrame extends JFrame {
         backgroundLabel = new JLabel();
         backgroundLabel.setBounds(0, 0, 400, 520);
 
-        // ★★★ 부기 이미지 로딩 및 크기 조정
+        // ★★★ 부기 애니메이션 스레드 시작 ★★★
         bugiLabel = new JLabel();
-        // 💡 2. 부기 이미지 경로 수정 완료
-        java.net.URL bugiUrl = getClass().getResource("/img/bugi.png");
-        
-        if (bugiUrl != null) {
-            
-            try {
-                // 1. 원본 이미지 로드
-                ImageIcon originalIcon = new ImageIcon(bugiUrl);
-                Image originalImage = originalIcon.getImage();
-
-                // 2. bugiLabel의 설정된 크기 (150x200)를 가져옵니다.
-                int bugiWidth = 150; 
-                int bugiHeight = 200;
-                
-                // 3. 이미지 크기를 조정합니다.
-                Image scaledImage = originalImage.getScaledInstance(
-                    bugiWidth, 
-                    bugiHeight, 
-                    Image.SCALE_SMOOTH // 품질을 고려한 부드러운 조정
-                );
-                
-                // 4. 조정된 이미지로 아이콘을 설정합니다.
-                bugiLabel.setIcon(new ImageIcon(scaledImage));
-                
-            } catch (Exception e) {
-                 System.out.println("❌ /img/bugi.png 크기 조정 중 오류 발생: " + e.getMessage());
-            }
-
-        } else {
-            // 이 메시지가 출력된다면 Classpath 설정이 잘못된 것입니다.
-            System.out.println("❌ /img/bugi.png 로딩 실패! (Classpath 경로 확인 요망)"); 
-        }
-
         bugiLabel.setBounds(130, 260, 150, 200);
+        BugiAnimator bugiAnimator = new BugiAnimator(bugiLabel, gm);
+        Thread animationThread = new Thread(bugiAnimator);
+        animationThread.setDaemon(true); // Main window가 닫힐 때 스레드도 함께 종료되도록 설정
+        animationThread.start();
 
         // 장소명 + 좌우 이동
         btnLeft = new JButton("◀");
