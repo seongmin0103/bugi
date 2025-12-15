@@ -14,6 +14,8 @@ public class GameFrame extends JFrame {
     private JProgressBar barHunger, barHealth, barMood, barEnergy;
     private JLabel backgroundLabel, bugiLabel;
     private JButton btnLeft, btnRight, btnAction, btnInventory, btnShop;
+    private JToggleButton btnBGM;
+    private SoundManager soundManager;
 
     private String[] places = {"집", "공원", "욕실", "학교", "카페", "병원"};
     private int placeIndex = 0;
@@ -24,6 +26,7 @@ public class GameFrame extends JFrame {
     public GameFrame() {
 
         gm = new GameManager();
+        soundManager = new SoundManager("/sound/Bugi_BGM.wav");
 
         // 💡 1. 배경 이미지 경로 수정 완료
         bgMap.put("집", "/img/home.png");
@@ -55,7 +58,7 @@ public class GameFrame extends JFrame {
         setLayout(new BorderLayout());
 
         // =================== 상단 정보 ===================
-        JPanel topPanel = new JPanel(new GridLayout(2, 3));
+        JPanel topPanel = new JPanel(new GridLayout(2, 4, 5, 5)); // 8개 컴포넌트를 위한 레이아웃
         topPanel.setBackground(new Color(30, 30, 30));
 
         lblCoins = makeInfoLabel("코인: 0");
@@ -72,7 +75,7 @@ public class GameFrame extends JFrame {
         topPanel.add(lblTime);
         topPanel.add(lblSeason);
         topPanel.add(lblSemester);
-
+        
         add(topPanel, BorderLayout.NORTH);
 
         // =================== 중앙 배경 & 부기 (JLayeredPane으로 변경) ===================
@@ -132,10 +135,27 @@ public class GameFrame extends JFrame {
         placePanel.add(lblPlace, BorderLayout.CENTER);
         placePanel.add(btnRight, BorderLayout.EAST);
         
+        // BGM 버튼 (좌측 상단으로 이동 및 아이콘 설정)
+        btnBGM = new JToggleButton();
+        btnBGM.setBounds(10, 10, 40, 40);
+        btnBGM.setMargin(new Insets(0, 0, 0, 0));
+        btnBGM.setBorderPainted(false);
+        btnBGM.setContentAreaFilled(false);
+        
+        btnBGM.addActionListener(e -> {
+            soundManager.toggleBGM();
+            updateBGMButtonIcon(); // 상태 변경 후 아이콘 업데이트
+        });
+        
+        // 초기 상태에 맞춰 아이콘 설정
+        updateBGMButtonIcon();
+
+
         // JLayeredPane에 각 컴포넌트를 추가 (숫자가 높을수록 위에 표시됨)
         centerPanel.add(backgroundLabel, Integer.valueOf(0)); // 가장 아래
         centerPanel.add(bugiLabel, Integer.valueOf(1));       // 중간
-        centerPanel.add(placePanel, Integer.valueOf(2));      // 가장 위
+        centerPanel.add(placePanel, Integer.valueOf(2));      // 장소이동 UI
+        centerPanel.add(btnBGM, Integer.valueOf(3));          // BGM 버튼이 가장 위
 
         add(centerPanel, BorderLayout.CENTER);
 
@@ -319,7 +339,7 @@ public class GameFrame extends JFrame {
     }
 
     // 버튼 아이콘 설정 헬퍼
-    private void setButtonIcon(JButton button, String iconPath, int size) {
+    private void setButtonIcon(AbstractButton button, String iconPath, int size) {
         URL imageUrl = getClass().getResource(iconPath);
         if (imageUrl != null) {
             ImageIcon icon = new ImageIcon(imageUrl);
@@ -334,5 +354,16 @@ public class GameFrame extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new GameFrame().setVisible(true));
+    }
+
+    // BGM 버튼 아이콘 업데이트 헬퍼
+    private void updateBGMButtonIcon() {
+        if (soundManager.isPlaying()) {
+            setButtonIcon(btnBGM, "/img/BGMON.png", 40);
+            btnBGM.setSelected(true);
+        } else {
+            setButtonIcon(btnBGM, "/img/BGMOFF.png", 40);
+            btnBGM.setSelected(false);
+        }
     }
 }
