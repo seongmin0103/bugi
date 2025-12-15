@@ -58,4 +58,22 @@ public class SoundManager {
     public boolean isPlaying() {
         return isPlaying;
     }
+
+    public static void playSound(String filePath) {
+        try {
+            URL soundUrl = SoundManager.class.getResource(filePath);
+            if (soundUrl == null) {
+                System.err.println("사운드 파일을 찾을 수 없습니다: " + filePath);
+                return;
+            }
+            InputStream audioSrc = soundUrl.openStream();
+            InputStream bufferedIn = new BufferedInputStream(audioSrc);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            Clip effectClip = AudioSystem.getClip();
+            effectClip.open(audioStream);
+            effectClip.start();
+        } catch (Exception e) {
+            System.err.println("효과음 재생 중 오류 발생: " + e.getMessage());
+        }
+    }
 }

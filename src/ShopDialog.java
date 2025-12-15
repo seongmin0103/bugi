@@ -32,7 +32,10 @@ public class ShopDialog extends JDialog {
 
         // Close button
         JButton closeButton = new JButton("닫기");
-        closeButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
+            dispose();
+        });
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(closeButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -46,6 +49,7 @@ public class ShopDialog extends JDialog {
         JButton buyButton = new JButton("구매");
 
         buyButton.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
             boolean success = gameManager.purchaseItemToInventory(item);
             if (success) {
                 JOptionPane.showMessageDialog(this,

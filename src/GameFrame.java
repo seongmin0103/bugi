@@ -143,6 +143,7 @@ public class GameFrame extends JFrame {
         btnBGM.setContentAreaFilled(false);
         
         btnBGM.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
             soundManager.toggleBGM();
             updateBGMButtonIcon(); // 상태 변경 후 아이콘 업데이트
         });
@@ -203,27 +204,35 @@ public class GameFrame extends JFrame {
 
         // =================== 이벤트 ===================
         btnLeft.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
             placeIndex = (placeIndex - 1 + places.length) % places.length;
             gm.movePlaceOnly(places[placeIndex]);
             refreshUI();
         });
 
         btnRight.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
             placeIndex = (placeIndex + 1) % places.length;
             gm.movePlaceOnly(places[placeIndex]);
             refreshUI();
         });
 
         btnAction.addActionListener(e -> {
-            gm.doCurrentPlaceAction();
+            SoundManager.playSound("/sound/button_tap.wav");
+            String result = gm.doCurrentPlaceAction();
+            if (result != null) {
+                JOptionPane.showMessageDialog(this, result, "행동 실패", JOptionPane.WARNING_MESSAGE);
+            }
             refreshUI();
         });
 
         btnInventory.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
             InventoryDialog inventoryDialog = new InventoryDialog(this, gm);
             inventoryDialog.setVisible(true);
         });
         btnShop.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
             ShopDialog shopDialog = new ShopDialog(this, gm);
             shopDialog.setVisible(true);
         });
@@ -322,7 +331,7 @@ public class GameFrame extends JFrame {
         lblSemester.setText("학기: " + t.getSemester());
         lblSeason.setText("계절: " + t.getCurrentSeason());
 
-        lblAction.setText("행동: " + getActionKorean(current.getAction()));
+        lblAction.setText(getActionKorean(current.getAction()));
         lblQuest.setText("퀘스트: " + gm.getTodayQuest().getDescription());
     }
 

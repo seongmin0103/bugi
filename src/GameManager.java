@@ -100,9 +100,61 @@ public class GameManager {
     }
 
     // 현재 장소에서 행동 수행 + 시간 진행
-    public void doCurrentPlaceAction() {
-        placeManager.getCurrentPlace().performAction(bugi);
+    public String doCurrentPlaceAction() {
+        Place currentPlace = placeManager.getCurrentPlace();
+        String action = currentPlace.getAction();
+        ImaginaryBugi bugi = this.bugi;
+        StatusGauge gauge = bugi.getGauge();
+        CoinManager coins = bugi.getCoins();
+
+        switch (action) {
+            case "sleep":
+                gauge.updateStatus("sleep");
+                break;
+
+            case "study":
+                if (gauge.getEnergy() < 10 || gauge.getHunger() < 10) {
+                    return "에너지가 부족하거나 배가 고파서 공부할 수 없습니다.";
+                }
+                bugi.study();
+                break;
+
+            case "work":
+                if (gauge.getEnergy() < 15 || gauge.getHunger() < 15) {
+                    return "에너지가 부족하거나 배가 고파서 아르바이트를 할 수 없습니다.";
+                }
+                bugi.work();
+                break;
+
+            case "exercise":
+                if (gauge.getEnergy() < 10 || gauge.getHunger() < 12) {
+                    return "에너지가 부족하거나 배가 고파서 운동할 수 없습니다.";
+                }
+                bugi.exercise();
+                break;
+
+            case "wash":
+                bugi.wash();
+                break;
+
+            case "heal":
+                if (!coins.canAfford(20)) {
+                    return "코인이 부족하여 치료를 받을 수 없습니다.";
+                }
+                bugi.heal();
+                break;
+            
+            case "eat":
+                 return "아이템을 사용해서 먹어야 합니다.";
+
+            default:
+                // 아무 행동도 없는 곳
+                return null; 
+        }
+
+        // 행동 성공 시 시간 진행
         timeSystem.nextTime();
+        return null; // 성공
     }
 
     // ----------------------------------------------------

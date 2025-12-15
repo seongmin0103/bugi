@@ -27,7 +27,10 @@ public class InventoryDialog extends JDialog {
         add(scrollPane, BorderLayout.CENTER);
 
         JButton closeButton = new JButton("닫기");
-        closeButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
+            dispose();
+        });
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(closeButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -58,6 +61,7 @@ public class InventoryDialog extends JDialog {
         JButton useButton = new JButton("사용하기");
 
         useButton.addActionListener(e -> {
+            SoundManager.playSound("/sound/button_tap.wav");
             boolean success = gameManager.getInventory().useItem(item, gameManager.getBugi());
 
             if (success) {
