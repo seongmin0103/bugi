@@ -29,8 +29,8 @@ public class StatusGauge {
     public void decreaseOverTime() {
         decrease("hunger", 2);
         decrease("energy", 2);
-        decrease("mood", 1);
-        decrease("health", 1);
+        decrease("mood", 2);
+        decrease("health", 2);
     }
 
     // 특정 게이지 이름으로 감소
@@ -160,6 +160,9 @@ public class StatusGauge {
         energy = Math.max(0, Math.min(value, maxValue));
     }
 
-    
+    public boolean isGameOver() {
+        int threshold = 5;
+        return hunger <= threshold || health <= threshold || mood <= threshold || energy <= threshold;
+    }
 }
 

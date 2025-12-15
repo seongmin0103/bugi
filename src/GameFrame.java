@@ -224,6 +224,12 @@ public class GameFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, result, "행동 실패", JOptionPane.WARNING_MESSAGE);
             }
             refreshUI();
+
+            // 게임 오버 체크
+            if (gm.getBugi().getGauge().isGameOver()) {
+                JOptionPane.showMessageDialog(this, "게임오버", "GAME OVER", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
         });
 
         btnInventory.addActionListener(e -> {

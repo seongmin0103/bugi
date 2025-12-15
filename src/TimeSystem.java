@@ -27,17 +27,20 @@ public class TimeSystem {
     // ----------------------------------------------------
     // 3. 시간 진행 (행동 1번 = 시간 1칸 진행)
     // ----------------------------------------------------
-    public void nextTime() {
+    public boolean nextTime() {
 
+        boolean isNewDay = false;
         currentTimeIndex++;
 
         // 하루 끝났을 때
         if (currentTimeIndex >= times.length) {
             currentTimeIndex = 0;
             nextDay();
+            isNewDay = true;
         }
 
         System.out.println("⏰ 현재 시간: " + getCurrentTime());
+        return isNewDay;
     }
 
     // ----------------------------------------------------

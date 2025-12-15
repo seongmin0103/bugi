@@ -153,7 +153,10 @@ public class GameManager {
         }
 
         // 행동 성공 시 시간 진행
-        timeSystem.nextTime();
+        boolean isNewDay = timeSystem.nextTime();
+        if (isNewDay) {
+            bugi.getGauge().decreaseOverTime();
+        }
         return null; // 성공
     }
 
