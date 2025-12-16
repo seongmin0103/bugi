@@ -13,8 +13,6 @@ public class GameManager {
     private ItemManager itemManager;
     private Inventory inventory;
 
-    private Quest todayQuest;
-
     // ----------------------------------------------------
     // 2. 생성자
     // ----------------------------------------------------
@@ -24,9 +22,6 @@ public class GameManager {
         timeSystem = new TimeSystem();
         itemManager = new ItemManager();
         inventory = new Inventory();
-
-        // 첫 퀘스트 생성
-        todayQuest = Quest.createRandomQuest();
     }
 
     // ----------------------------------------------------
@@ -67,16 +62,6 @@ public class GameManager {
     }
 
     // ----------------------------------------------------
-    // 6. 퀘스트 완료
-    // ----------------------------------------------------
-    public void completeQuest() {
-        todayQuest.complete(bugi);
-
-        // 다음 날 새 퀘스트 생성
-        todayQuest = Quest.createRandomQuest();
-    }
-
-    // ----------------------------------------------------
     // 7. 현재 게임 상태 출력
     // ----------------------------------------------------
     public void showStatus() {
@@ -89,7 +74,6 @@ public class GameManager {
 
         System.out.println("부기 상태: " + bugi.getGauge());
         System.out.println("보유 코인: " + bugi.getCoins().getBalance());
-        System.out.println("현재 퀘스트: " + todayQuest.getDescription());
         System.out.println("======================\n");
     }
 
@@ -181,10 +165,6 @@ public class GameManager {
 
     public PlaceManager getPlaceManager() {
         return placeManager;
-    }
-
-    public Quest getTodayQuest() {
-        return todayQuest;
     }
     
 

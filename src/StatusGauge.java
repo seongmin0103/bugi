@@ -59,28 +59,30 @@ public class StatusGauge {
         switch (action) {
 
             case "sleep":
+                hunger = decrease(hunger, 8);
                 energy = increase(energy, 25);
                 mood   = increase(mood, 5);
                 break;
 
             case "study":
                 hunger = decrease(hunger, 10);
+                health = decrease(health, 8);
                 mood   = decrease(mood, 8);
-                energy = decrease(energy, 10);
+                energy = decrease(energy, 8);
                 break;
 
             case "work":
                 hunger = decrease(hunger, 15);
                 health = decrease(health, 15);
                 mood   = decrease(mood, 10);
-                energy = decrease(energy, 15);
+                energy = decrease(energy, 12);
                 break;
 
             case "exercise":
                 hunger = decrease(hunger, 12);
                 health = increase(health, 15);
                 mood   = increase(mood, 10);
-                energy = decrease(energy, 10);
+                energy = decrease(energy, 15);
                 break;
 
             case "wash":

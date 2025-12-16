@@ -10,7 +10,7 @@ public class GameFrame extends JFrame {
 
     private GameManager gm; // 이 클래스는 별도로 정의되어야 합니다.
 
-    private JLabel lblPlace, lblTime, lblSemester, lblSeason, lblCoins, lblQuest, lblAction;
+    private JLabel lblPlace, lblTime, lblSemester, lblSeason, lblCoins, lblAction;
     private JProgressBar barHunger, barHealth, barMood, barEnergy;
     private JLabel backgroundLabel, bugiLabel;
     private JButton btnLeft, btnRight, btnAction, btnInventory, btnShop;
@@ -165,11 +165,9 @@ public class GameFrame extends JFrame {
         btnPanel.add(btnShop);
 
         lblAction = new JLabel("행동: 없음", SwingConstants.CENTER);
-        lblQuest = new JLabel("퀘스트: 없음", SwingConstants.CENTER);
 
         bottomPanel.add(btnPanel, BorderLayout.NORTH);
         bottomPanel.add(lblAction, BorderLayout.CENTER);
-        bottomPanel.add(lblQuest, BorderLayout.SOUTH);
 
         add(bottomPanel, BorderLayout.SOUTH);
 
@@ -309,7 +307,6 @@ public class GameFrame extends JFrame {
         lblSeason.setText("계절: " + t.getCurrentSeason());
 
         lblAction.setText(getActionKorean(current.getAction()));
-        lblQuest.setText("퀘스트: " + gm.getTodayQuest().getDescription());
     }
 
     private String getActionKorean(String a) {

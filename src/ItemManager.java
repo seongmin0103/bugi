@@ -29,7 +29,7 @@ public class ItemManager {
         items.add(new Item("마라탕", 20, 20, -10, 20, 5));
         items.add(new Item("라면", 10, 10, -5, 10, 2));
 
-        items.add(new Item("에너지 드링크", 7, 0, -10, 5, 20));
+        items.add(new Item("에너지 드링크", 7, 0, -20, 5, 20));
         items.add(new Item("학식", 10, 10, 10, 10, 10));
         items.add(new Item("고구마", 5, 5, 10, 3, 5));
         items.add(new Item("바나나", 5, 5, 7, 5, 5));

@@ -9,7 +9,6 @@ public class ImaginaryBugi {
     private String name;         // 부기 이름
     private StatusGauge gauge;   // 상태 게이지 (배고픔, 건강, 기분, 에너지)
     private CoinManager coins;   // 코인 관리
-    private LevelSystem level;   // 레벨 시스템
 
     // 공부 누적량 등 레벨업 조건용 값
     private int studyCount;
@@ -23,7 +22,6 @@ public class ImaginaryBugi {
         this.name = name;
         this.gauge = new StatusGauge();   // 디폴트: 모든 게이지 100
         this.coins = new CoinManager();
-        this.level = new LevelSystem();
         this.studyCount = 0;
         this.workCount = 0;
         this.exerciseCount = 0;
@@ -42,10 +40,6 @@ public class ImaginaryBugi {
 
     public CoinManager getCoins() {
         return coins;
-    }
-
-    public LevelSystem getLevelSystem() {
-        return level;
     }
     
     public int getStudyCount() {
@@ -108,26 +102,12 @@ public class ImaginaryBugi {
     }
 
     // ----------------------------------------------------
-    // 5. 레벨업 체크
-    // ----------------------------------------------------
-    public void checkLevelUp() {
-        boolean levelUp = level.checkLevelUp(this);
-
-        if (levelUp) {
-            System.out.println(name + "이(가) 레벨업 했습니다!");
-            level.increaseStats();
-            gauge.increaseStats(); // 게이지 상한 올리기
-        }
-    }
-
-    // ----------------------------------------------------
     // 6. toString()
     // ----------------------------------------------------
     @Override
     public String toString() {
         return "ImaginaryBugi{name='" + name + "', " +
                 "gauge=" + gauge +
-                ", coins=" + coins.getBalance() +
-                ", level=" + level.getLevel() + "}";
+                ", coins=" + coins.getBalance() + "}";
     }
 }

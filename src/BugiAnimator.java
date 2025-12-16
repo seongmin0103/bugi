@@ -26,10 +26,14 @@ public class BugiAnimator implements Runnable {
     private JLabel label;
     private GameManager gameManager;
     private ImageIcon normalIcon;
+    private ImageIcon stunIcon;
+    private ImageIcon dirtyIcon;
+    private ImageIcon hungryIcon;
 
     private Animation happyAnim;
     private Animation angryAnim;
     private Animation sickAnim;
+    private Animation sadAnim;
 
     private Animation currentAnimation;
     private int frameIndex = 0;
@@ -43,11 +47,27 @@ public class BugiAnimator implements Runnable {
         happyAnim = loadAnimation("/img/happy.gif");
         angryAnim = loadAnimation("/img/angry.gif");
         sickAnim = loadAnimation("/img/sick.gif");
+        sadAnim = loadAnimation("/img/sad.gif");
         
         // Load default static image
         URL normalUrl = getClass().getResource("/img/bugi.png");
         if (normalUrl != null) {
             this.normalIcon = new ImageIcon(normalUrl);
+        }
+        
+        URL stunUrl = getClass().getResource("/img/stun.png");
+        if (stunUrl != null) {
+            this.stunIcon = new ImageIcon(stunUrl);
+        }
+
+        URL dirtyUrl = getClass().getResource("/img/dirty.png");
+        if (dirtyUrl != null) {
+            this.dirtyIcon = new ImageIcon(dirtyUrl);
+        }
+
+        URL hungryUrl = getClass().getResource("/img/hungry.png");
+        if (hungryUrl != null) {
+            this.hungryIcon = new ImageIcon(hungryUrl);
         }
     }
 
@@ -98,9 +118,17 @@ public class BugiAnimator implements Runnable {
                 StatusGauge gauge = gameManager.getBugi().getGauge();
                 String currentState = "normal";
 
-                // Condition order matters: sick is highest priority
-                if (gauge.getHealth() <= 20 && sickAnim != null) {
+                // 상태 우선순위: stun > sad > sick > hungry > dirty > angry > happy
+                if (gauge.getHunger() < 10 && gauge.getHealth() < 10 && gauge.getMood() < 10 && gauge.getEnergy() < 10 && stunIcon != null) {
+                    currentState = "stun";
+                } else if (gauge.getHunger() < 20 && gauge.getHealth() < 20 && gauge.getMood() < 20 && gauge.getEnergy() < 20 && sadAnim != null) {
+                    currentState = "sad";
+                } else if (gauge.getHealth() <= 20 && sickAnim != null) {
                     currentState = "sick";
+                } else if (gauge.getHunger() < 40 && hungryIcon != null) {
+                    currentState = "hungry";
+                } else if (gauge.getHealth() < 40 && gauge.getMood() < 40 && dirtyIcon != null) {
+                    currentState = "dirty";
                 } else if (gauge.getHunger() <= 40 && gauge.getHealth() <= 40 && gauge.getMood() <= 40 && gauge.getEnergy() <= 40 && angryAnim != null) {
                     currentState = "angry";
                 } else if (gauge.getHunger() >= 60 && gauge.getHealth() >= 60 && gauge.getMood() >= 60 && gauge.getEnergy() >= 60 && happyAnim != null) {
@@ -113,10 +141,14 @@ public class BugiAnimator implements Runnable {
                 lastState = currentState;
 
                 switch (currentState) {
-                    case "happy": currentAnimation = happyAnim; break;
-                    case "angry": currentAnimation = angryAnim; break;
-                    case "sick":  currentAnimation = sickAnim;  break;
-                    default:      currentAnimation = null;      break;
+                    case "stun":   currentAnimation = null;      break;
+                    case "hungry": currentAnimation = null;      break;
+                    case "dirty":  currentAnimation = null;      break;
+                    case "sad":    currentAnimation = sadAnim;   break;
+                    case "happy":  currentAnimation = happyAnim; break;
+                    case "angry":  currentAnimation = angryAnim; break;
+                    case "sick":   currentAnimation = sickAnim;  break;
+                    default:       currentAnimation = null;      break;
                 }
                 
                 if (currentAnimation != null) {
@@ -126,10 +158,21 @@ public class BugiAnimator implements Runnable {
                     Thread.sleep(currentAnimation.delays.get(frameIndex));
                     frameIndex = (frameIndex + 1) % currentAnimation.frames.size();
                 } else {
-                    // Fallback to normal static icon
+                    // 정적 이미지 상태 처리 (normal, stun, dirty, hungry)
+                    final ImageIcon iconToSet;
+                    if ("stun".equals(currentState) && stunIcon != null) {
+                        iconToSet = stunIcon;
+                    } else if ("dirty".equals(currentState) && dirtyIcon != null) {
+                        iconToSet = dirtyIcon;
+                    } else if ("hungry".equals(currentState) && hungryIcon != null) {
+                        iconToSet = hungryIcon;
+                    } else {
+                        iconToSet = normalIcon;
+                    }
+
                     SwingUtilities.invokeLater(() -> {
-                        if (normalIcon != null) {
-                            Image scaledImage = normalIcon.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH);
+                        if (iconToSet != null) {
+                            Image scaledImage = iconToSet.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH);
                             label.setIcon(new ImageIcon(scaledImage));
                         }
                     });
