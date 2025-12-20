@@ -43,11 +43,11 @@ public class BugiAnimator implements Runnable {
         this.label = label;
         this.gameManager = gameManager;
 
-        // Load all animations
-        happyAnim = loadAnimation("/img/happy.gif");
-        angryAnim = loadAnimation("/img/angry.gif");
-        sickAnim = loadAnimation("/img/sick.gif");
-        sadAnim = loadAnimation("/img/sad.gif");
+        // Load all animations from PNG sequences
+        happyAnim = loadAnimationFromPngs("happy", 3);
+        angryAnim = loadAnimationFromPngs("angry", 3);
+        sickAnim = loadAnimationFromPngs("sick", 3);
+        sadAnim = loadAnimationFromPngs("sad", 3);
         
         // Load default static image
         URL normalUrl = getClass().getResource("/img/bugi.png");
@@ -71,44 +71,24 @@ public class BugiAnimator implements Runnable {
         }
     }
 
-    private Animation loadAnimation(String path) {
+    private Animation loadAnimationFromPngs(String baseName, int frameCount) {
+        List<BufferedImage> frames = new ArrayList<>();
+        List<Integer> delays = new ArrayList<>();
         try {
-            URL url = getClass().getResource(path);
-            if (url == null) {
-                System.err.println("애니메이션 파일을 찾을 수 없습니다: " + path);
-                return null;
+            for (int i = 1; i <= frameCount; i++) {
+                URL url = getClass().getResource("/img/" + baseName + i + ".png");
+                if (url == null) {
+                    System.err.println("애니메이션 파일을 찾을 수 없습니다: " + baseName + i + ".png");
+                    continue;
+                }
+                frames.add(ImageIO.read(url));
+                delays.add(150); // 각 프레임 간의 지연 시간 (ms)
             }
-
-            ImageReader reader = ImageIO.getImageReadersByFormatName("gif").next();
-            reader.setInput(ImageIO.createImageInputStream(url.openStream()));
-
-            List<BufferedImage> frames = new ArrayList<>();
-            List<Integer> delays = new ArrayList<>();
-            int numFrames = reader.getNumImages(true);
-
-            for (int i = 0; i < numFrames; i++) {
-                frames.add(reader.read(i));
-                IIOMetadata metadata = reader.getImageMetadata(i);
-                IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metadata.getNativeMetadataFormatName());
-                IIOMetadataNode graphicsControl = findNode(root, "GraphicControlExtension");
-                int delay = (graphicsControl != null) ? Integer.parseInt(graphicsControl.getAttribute("delayTime")) : 10;
-                delays.add(delay * 10); // Convert to milliseconds
-            }
-            return new Animation(frames, delays);
-
         } catch (IOException e) {
-            System.err.println("애니메이션 로딩 중 오류: " + path + ", " + e.getMessage());
+            System.err.println("PNG 시퀀스 로딩 중 오류: " + baseName + ", " + e.getMessage());
             return null;
         }
-    }
-    
-    private IIOMetadataNode findNode(IIOMetadataNode rootNode, String nodeName) {
-        for (int i = 0; i < rootNode.getLength(); i++) {
-            if (rootNode.item(i).getNodeName().equalsIgnoreCase(nodeName)) {
-                return (IIOMetadataNode) rootNode.item(i);
-            }
-        }
-        return null;
+        return new Animation(frames, delays);
     }
 
     @Override
